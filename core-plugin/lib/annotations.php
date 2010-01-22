@@ -32,7 +32,8 @@ class Annotations {
 	private static $cache = array();
 
   	static function addClass($class, $file) { 
-		self::$cache[$class] = $file;
+		log_message('debug', "Class added to annotation cache: [$class]:$file");
+		self::$cache[strtolower($class)] = $file;
   	}
   
 	static function has($args = null) {
@@ -53,7 +54,7 @@ class Annotations {
 		// then process out function parameters:	
 			
 		// class is always first argument
-		$class = array_shift($args);
+		$class = strtolower(array_shift($args));
 		
 		$annotation = null;
 		
@@ -83,7 +84,8 @@ class Annotations {
 			return false;
 			
 		// class is always first argument
-		$class = array_shift($args);
+		$class = strtolower(array_shift($args));
+		$method = null;
 		
 		$annotation = null;
 		
@@ -100,8 +102,8 @@ class Annotations {
 	
     	// make sure the annotations for this class have been processed
 		self::process($class);
-    
-		// return all annotations if not specific ones are mentioned.
+		
+		// return all annotations if no specific ones are mentioned.
 	    if (!$annotation)
 	      	return self::$cache[$class];
       
@@ -110,21 +112,24 @@ class Annotations {
 			
 		$ret = array();
 
-		$annotations = ($method ? self::$cache[$class]['methods'][$method] : self::$cache[$class]['__class__']);
-
+		if ($method && isset(self::$cache[$class]['methods'][$method]))
+			$annotations = self::$cache[$class]['methods'][$method];
+		else if (isset(self::$cache[$class]['__class__']))
+			$annotations = self::$cache[$class]['__class__'];
+		else
+			$annotations = array(); // none!
+		
 		foreach($annotation as $a) {
 			if (isset($annotations[$a]))
 				$ret[$a] = $annotations[$a];
 		}
 		
-		// if only one annotation was found, return it's value
-		if (count($ret) > 1) {
+		if (count(array_keys($ret)) > 1) {
 			return $ret;
 		}
-		// otherwise, return hash table of annotations and values
 		else {
 			$keys = array_keys($ret);
-			return $ret[$keys[0]];
+			return count($keys) ? $ret[$keys[0]] : null;
 		}
 	}
 

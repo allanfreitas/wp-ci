@@ -18,21 +18,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-wp_enqueue_script('jquery-tinymce', WP_PLUGIN_URL.'/wp-ci/ci/system/helpers/tiny_mce/jquery.tinymce.js', array('jquery'));
+wp_enqueue_script('jquery-ui', WP_PLUGIN_URL.'/wp-ci/ci/application/helpers/jquery_ui/js/jquery-ui-1.7.2.custom.min.js', array('jquery'));
+wp_register_style('jquery-ui', WP_PLUGIN_URL.'/wp-ci/ci/application/helpers/jquery_ui/css/smoothness/jquery-ui-1.7.2.custom.css');
+wp_enqueue_style('wpci-ui', WP_PLUGIN_URL.'/wp-ci/css/admin.css', array('jquery-ui'));
 
-function tinymce_simple($css_selector = 'textarea.tinymce') {
-	?>
-		<script type="text/javascript">
-			;(function($) { $(function() { setTimeout(function() {
-				$.each($('<?php echo $css_selector ?>'), function(i, editor) {
-					$(editor).tinymce({
-						script_url: '<?php echo WP_PLUGIN_URL ?>/wp-ci/ci/system/helpers/tiny_mce/tiny_mce.js',
-						mode: 'specific_textareas',
-						editor_selector: 'tinymce',
-						theme: 'simple'
-					});
-				});	
-			}, 2000); }); })(jQuery);
-		</script>
+function ui_tabs($css_selector = '.ui-tabs') {
+	?> 
+		<script type="text/javascript"> 
+			jQuery(function() { jQuery('<?php echo $css_selector ?>').tabs(); }); 
+		</script> 
 	<?php
 }

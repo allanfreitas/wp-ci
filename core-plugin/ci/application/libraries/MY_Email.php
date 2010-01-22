@@ -18,13 +18,29 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-class MY_Session extends CI_Session {
+class MY_Email extends CI_Email {
 	
-	function MY_Session($params = array()) {
-		// encryption must be forced on to alleviate conflict between WordPress and CI treatments of $_COOKIE scope
-		$params['sess_encrypt_cookie'] = TRUE;
-		
-		parent::CI_Session($params);
+	/**
+	 * Support PHP4...
+	 */
+	function MY_Email() {
+		parent::CI_Email();
+	}
+	
+	/**
+	 * Load a view file to parse as the message for the e-mail.
+	 */
+	function view($name, $data = array()) {
+		$CI = &get_instance();
+		$this->message($CI->load->view($name, $data, true));
+	}
+	
+	/**
+	 * Loads a view file to parse as the alternative message for the e-mail.
+	 */
+	function alt_view($name, $data = array()) {
+		$CI = &get_instance();
+		$this->set_alt_message($CI->load->view($name, $data, true));
 	}
 	
 }

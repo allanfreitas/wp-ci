@@ -27,7 +27,7 @@ function wpci_admin_menu() {
 	
 	// add menus for all applications (via annotations)
 	foreach(WPCI::$apps as $app => $app_path)
-		wpci_process_admin_annotations($app, $app_path);
+		wpci_process_admin_annotations($app, "$app_path/controllers");
 }
 
 function wpci_process_admin_annotations($app, $app_path) {
