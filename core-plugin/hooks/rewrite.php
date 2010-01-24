@@ -32,7 +32,7 @@ function wpci_generate_rewrite_rules($wp_rewrite) {
 	
 	$gateway = wpci_get_gateway();
 	$wp_rewrite->rules = array(
-		'^'.wpci_get_forward_gateway_slug().'/.*' => 'index.php?pagename='.$gateway->post_name
+		'^'.wpci_get_slug().'/.*' => 'index.php?pagename='.$gateway->post_name
 	) + $wp_rewrite->rules;
 }
 

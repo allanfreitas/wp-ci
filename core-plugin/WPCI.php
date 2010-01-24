@@ -256,6 +256,10 @@ class WPCI {
 		}
 	}
 	
+	static function get_apps() {
+		return array_merge(array('__core__' => APPPATH), self::$apps);
+	}
+	
 	static function execute_admin_fx() {
 		global $OUT;
 		echo $OUT->_display();

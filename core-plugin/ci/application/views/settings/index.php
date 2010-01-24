@@ -3,7 +3,7 @@
 <div class="wrap">
 	<?php admin_head('WP-CI Settings'); ?>
 
-	<form method="post" action="<?php admin_link('saveSettings') ?>">
+	<?php echo form_open('saveSettings') ?>
 		
 		<?php success_and_failure(); ?>
 		
@@ -32,7 +32,7 @@
 			<tr>
 				<th class="row">Gateway Slug</th>
 				<td>
-					<?php echo form_input(array('name' => 'forward_gateway_slug', 'value' => wpci_get_forward_gateway_slug(), 'class' => 'regular-text')) ?>
+					<?php echo form_input(array('name' => 'slug', 'value' => wpci_get_slug(), 'class' => 'regular-text')) ?>
 				</td>
 			</tr>
 			<tr>
@@ -44,7 +44,15 @@
 					), wpci_get_database_debugging_enabled()) ?>
 				</td>
 			</tr>
-			
+			<tr>
+				<th class="row">SSL Support</th>
+				<td>
+					<?php echo form_dropdown('ssl_enabled', array(
+						'' => 'Disabled&nbsp;&nbsp;',
+						1 => 'Enabled'
+					), wpci_get_ssl_enabled()) ?>
+				</td>
+			</tr>
 		</table>
 		
 		<p class="submit">

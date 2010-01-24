@@ -329,8 +329,7 @@ function wpci_in_admin_footer() {
 	?> 
 		<span style="float: right; margin-left: 20px;">
 			You are running <a href="http://codeigniter.com" target="_blank">CodeIgniter&reg; <?php echo CI_VERSION ?></a>
-			| <a href="<?php echo WP_PLUGIN_URL ?>/wp-ci/ci/user_guide" target="_blank">User Manual</a>
-			| <a href="<?php echo WP_PLUGIN_URL ?>/wp-ci/ci/wpci_user_guide" target="_blank">Developing with WP-CI</a>
+			| <a href="http://wiki.github.com/collegeman/wp-ci/" target="_blank">Learn WP-CI</a>
 		</span> 
 	<?php
 }

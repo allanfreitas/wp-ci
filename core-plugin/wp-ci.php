@@ -63,3 +63,4 @@ require_once(WPCI_ROOT.'/bootstrap.php');
 
 WPCI::log('debug', '***** WP-CI Loaded. Yippie! *********************');
 
+//exit;

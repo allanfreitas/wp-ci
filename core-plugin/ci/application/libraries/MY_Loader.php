@@ -20,6 +20,10 @@
 
 class MY_Loader extends CI_Loader {
 	
+	function MY_Loader() {
+		parent::CI_Loader();
+	}
+	
 	function view($view, $vars = array(), $return = FALSE) {
 		// if $view is an array, bump all parameters up
 		if (is_array($view)) {
@@ -93,9 +97,9 @@ class MY_Loader extends CI_Loader {
 	
 		$model = strtolower($model);
 		
-		if (!file_exists($model_path = WPCI::active_app_path(FALSE).'models/'.$path.$model.EXT)) 
+		if (!file_exists($model_path = WPCI::active_app_path(FALSE).'/models/'.$path.$model.EXT)) 
 		{
-			if (!file_exists($model_path = APP_PATH.'models/'.$path.$model.EXT)) {
+			if (!file_exists($model_path = APPPATH.'models/'.$path.$model.EXT)) {
 				wp_die('Unable to locate the model you have specified: '.$model);
 			}	
 		}
@@ -657,7 +661,7 @@ class MY_Loader extends CI_Loader {
 	private function _ci_autoload($autoload) {	
 		
 		// Load any custom config file
-		if (count($autoload['config']) > 0)
+		if (isset($autoload['config']) && count($autoload['config']) > 0)
 		{			
 			$CI =& get_instance();
 			foreach ($autoload['config'] as $key => $val)
@@ -677,7 +681,7 @@ class MY_Loader extends CI_Loader {
 
 		// A little tweak to remain backward compatible
 		// The $autoload['core'] item was deprecated
-		if ( ! isset($autoload['libraries']))
+		if ( ! isset($autoload['libraries']) && isset($autoload['core']))
 		{
 			$autoload['libraries'] = $autoload['core'];
 		}
