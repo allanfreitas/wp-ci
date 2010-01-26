@@ -56,11 +56,20 @@ require_once(WPCI_ROOT.'/hooks/activation.php');
 require_once(WPCI_ROOT.'/hooks/rewrite.php');
 require_once(WPCI_ROOT.'/hooks/content.php');
 require_once(WPCI_ROOT.'/hooks/templates.php');
-require_once(WPCI_ROOT.'/hooks/menus.php');
+
+// define administrative menus
+add_action('admin_menu', array('WPCI', 'admin_menu'));
 
 // bootstrap CodeIgniter
 require_once(WPCI_ROOT.'/bootstrap.php');
 
-WPCI::log('debug', '***** WP-CI Loaded. Yippie! *********************');
+// execute when plugins are loaded
+add_action('plugins_loaded', array('WPCI', 'execute'));
 
-//exit;
+// call upon pluggable applications to register themsevles
+do_action('wpci_register_apps');
+
+log_message('debug', '+++| CodeIgniter is bootstrapped. Burn baby burn. |+++');
+
+
+

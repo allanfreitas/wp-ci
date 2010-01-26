@@ -99,12 +99,13 @@ function wpci_get_logging_threshold() {
 endif;
 
 /**
- * Debugging mode is triggered by a CI logging threshold of 2,
- * otherwise known as setting the threshold to "debugging".
+ * This is an alias for wpci_get_application_debugging_enabled(), which
+ * allows the application to quickly identify whether or not 
+ * application debugging is enabled.
  */
 if (!function_exists('is_debugging')):
 function is_debugging() {
-	return (wpci_get_logging_threshold() == 2);
+	return (wpci_get_application_debugging_enabled());
 }
 endif;
 
@@ -132,6 +133,17 @@ endif;
 if (!function_exists('wpci_get_database_debugging_enabled')):
 function wpci_get_database_debugging_enabled() {
 	return get_option('wpci_database_debugging_enabled', FALSE);
+}
+endif;
+
+/**
+ * Whether or not application debugging should be enabled. This value
+ * can be set using the WP-CI settings screen in the back-end. This
+ * value can also be retrieved using the is_debugging() function.
+ */
+if (!function_exists('wpci_get_application_debugging_enabled')):
+function wpci_get_application_debugging_enabled() {
+	return get_option('wpci_application_debugging_enabled', FALSE);
 }
 endif;
 
@@ -552,7 +564,7 @@ function form_open($path = array(), $attributes = '', $hidden = array(), $use_va
 	
 	// default form method is post
 	if (is_array($attributes) && !isset($attributes['method'])) {
-		$attributes = array('method' => 'post');
+		$attributes['method'] = 'post';
 	}
 	else if (is_string($attributes) && stripos($attributes, 'method=') === FALSE) {
 		$attributes .= ' method="post"';
@@ -626,9 +638,9 @@ function form_open($path = array(), $attributes = '', $hidden = array(), $use_va
 	$form .= '>';
 	
 	if ($use_validation_engine) {
-		wp_enqueue_style('jquery-validation-engine', WP_PLUGIN_URL.'/wp-ci/css/validationEngine.jquery.css');
-		wp_enqueue_script('jquery-validation-engine-lang', WP_PLUGIN_URL.'/wp-ci/js/jquery.validationEngine-en.js', array('jquery'));
-		wp_enqueue_script('jquery-validation-engine', WP_PLUGIN_URL.'/wp-ci/js/jquery.validationEngine.js', array('jquery-validation-engine-lang'));
+		wp_enqueue_style('jquery-validation-engine', resource('/css/validationEngine.jquery.css'));
+		wp_enqueue_script('jquery-validation-engine-lang', resource('/js/jquery.validationEngine-en.js'), array('jquery'));
+		wp_enqueue_script('jquery-validation-engine', resource('/js/jquery.validationEngine.js'), array('jquery-validation-engine-lang'));
 		$id = $attributes['id'];
 		$form .= "\n<script type=\"text/javascript\"> jQuery(function() { jQuery('#$form_id').validationEngine(); }); </script>";
 	}
@@ -640,6 +652,21 @@ function form_open($path = array(), $attributes = '', $hidden = array(), $use_va
 	return $form;
 }
 endif;
+
+if (!function_exists('resource')):
+function resource($file) {
+	if (is_array($file)) {
+		
+	}
+	else {
+		$url = WP_PLUGIN_URL.'/wp-ci'.$file;
+		if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
+			$url = preg_replace('/#^https?://#i', 'https://', $url);
+		return $url;
+	}
+}
+endif;
+
 
 /**
  * This function is typically defined in the CI form helper, but
@@ -681,7 +708,6 @@ function _attributes_to_string($attributes, $formtag = FALSE)
 	}
 }
 
-
 /**
  * Retrieve the content for the WordPress page at $path. This
  * allows for using the WP editing interface to handily store snippets
@@ -709,25 +735,37 @@ function wp_page_content($path, $include_edit_link = FALSE) {
 endif;
 
 if (!function_exists('wp_edit_link')):
-function wp_edit_link($ref = null) {
+function wp_edit_link($ref = null, $link = null, $before = '', $after = '') {
+	if (!current_user_can('edit_pages'))
+		return false;
+	
 	$post = null;
 	if (is_numeric($ref)) { // id
 		$post = new stdClass();
 		$post->ID = $ref;
 	}
 	else if (is_string($ref)) {
-		if (!$post = get_page_by_path($ref))
+		if (preg_match('#^https?://#i', $ref)) { // custom link
+			if ($link === null)
+				$link = __('Edit This');
+			$link = '<a class="post-edit-link" href="' . $ref . '" title="' . esc_attr( __( 'Edit This' ) ) . '">' . $link . '</a>';
+			echo $before . apply_filters( 'edit_post_link', $link, null ) . $after;
+			return;
+		}
+		else if (!($post = get_page_by_path($ref))) { // page path
 			wp_die("I couldn't find a page at <b>$ref</b>.");
+		}
 	}
 	else if (is_object($ref)) {
 		$post = $ref;
 	}
 	else {
-		edit_post_link();
+		// just default to the 
+		edit_post_link($link, $before, $after);
 		return;
 	}
 	
-	edit_post_link(null, '', '', $post->ID);
+	edit_post_link($link, $before, $after, $post->ID);
 }
 endif;
 

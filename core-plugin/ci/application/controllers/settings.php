@@ -20,6 +20,8 @@ class Settings extends Controller {
 			
 			update_option('wpci_ssl_enabled', $this->input->post('ssl_enabled'));
 			
+			update_option('wpci_application_debugging_enabled', strip_tags($this->input->post('application_debugging_enabled')));
+			
 			success('Settings <b>saved</b>.');
 			
 			redirect('index');
@@ -27,6 +29,7 @@ class Settings extends Controller {
 	}
 	
 	function index() {
+		$this->load->helper('ui');
 		$this->load->view('settings/index');
 	}
 	

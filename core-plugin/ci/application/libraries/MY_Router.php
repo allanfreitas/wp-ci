@@ -36,7 +36,7 @@ class MY_Router extends CI_Router {
 	function MY_Router() {
 		$this->config =& load_class('Config');
 		$this->uri =& load_class('URI');
-		log_message('debug', "Router Class Initialized But Not Yet Set");
+		log_message('debug', "Router Class Initialized");
 	}
 	
 	/**
