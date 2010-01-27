@@ -48,13 +48,14 @@ function wpci_get_gateway() {
 endif;
 
 /**
- * Lookup the slug that is used to identify CI requests, e.g., '/ci/...'.
+ * Lookup the slug that is used to identify CI requests, e.g., '/do/...'.
  * This value can be changed via the WP-CI configuration screen in
  * the back-end. 
  */
 if (!function_exists('wpci_get_slug')):
 function wpci_get_slug() {
-	return get_option("wpci_get_slug", "do");
+	$slug = get_option('wpci_get_slug');
+	return $slug ? $slug : 'do';
 }
 endif;
 
@@ -170,6 +171,15 @@ function is_codeigniter() {
 endif;
 
 /**
+ * @return TRUE when the current request is being processed across HTTPS
+ */
+if (!function_exists('is_secure')):
+function is_secure() {
+	return WPCI::is_secure();
+}
+endif;
+
+/**
  * @param $path A String or an Array specifying the contents of a CI request path
  * @return TRUE if $path represents the current action; otherwise FALSE.
  * @see wpci_parse_path() For valid values of $path
@@ -206,6 +216,14 @@ function title($title = null) {
 	return WPCI::get_title();
 }
 endif;
+
+if (!function_exists('resource')):
+function resource($file, $app = null) {
+	return WPCI::resource($file, $app);
+}
+endif;
+
+
 
 /**
  * Overrides the redirect() function in the CI URL Helper, instead delegating
@@ -638,9 +656,9 @@ function form_open($path = array(), $attributes = '', $hidden = array(), $use_va
 	$form .= '>';
 	
 	if ($use_validation_engine) {
-		wp_enqueue_style('jquery-validation-engine', resource('/css/validationEngine.jquery.css'));
-		wp_enqueue_script('jquery-validation-engine-lang', resource('/js/jquery.validationEngine-en.js'), array('jquery'));
-		wp_enqueue_script('jquery-validation-engine', resource('/js/jquery.validationEngine.js'), array('jquery-validation-engine-lang'));
+		wp_enqueue_style('jquery-validation-engine', resource('css/validationEngine.jquery.css'));
+		wp_enqueue_script('jquery-validation-engine-lang', resource('js/jquery.validationEngine-en.js'), array('jquery'));
+		wp_enqueue_script('jquery-validation-engine', resource('js/jquery.validationEngine.js'), array('jquery-validation-engine-lang'));
 		$id = $attributes['id'];
 		$form .= "\n<script type=\"text/javascript\"> jQuery(function() { jQuery('#$form_id').validationEngine(); }); </script>";
 	}
@@ -652,21 +670,6 @@ function form_open($path = array(), $attributes = '', $hidden = array(), $use_va
 	return $form;
 }
 endif;
-
-if (!function_exists('resource')):
-function resource($file) {
-	if (is_array($file)) {
-		
-	}
-	else {
-		$url = WP_PLUGIN_URL.'/wp-ci'.$file;
-		if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
-			$url = preg_replace('/#^https?://#i', 'https://', $url);
-		return $url;
-	}
-}
-endif;
-
 
 /**
  * This function is typically defined in the CI form helper, but

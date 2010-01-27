@@ -80,6 +80,10 @@ class WPCI {
 		return htmlentities(self::get($name, $default));
 	}
 	
+	static function is_secure() {
+		return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on';
+	}
+	
 	static function add_actions() {
 		add_action('activate_wp-ci/wp-ci.php', 		array('WPCI', 'activate_plugin'));
 		add_action('deactivate_wp-ci/wp-ci.php', 	array('WPCI', 'deactivate_plugin'));
@@ -216,18 +220,25 @@ class WPCI {
 		return $exclude;
 	}
 
-	static function get_url($resource, $app = null) {
-		if (!$app)
-			$app = self::$active_app;
+	static function resource($resource, $app = null) {
+		$resource = trim($resource);
 		
-		if ($app)
-			return WP_PLUGIN_URL."/$app/application/".$resource;
-		else
-			return WP_PLUGIN_URL."/wp-ci/".$resource;
-	}
-	
-	static function url($resource, $app = null) {
-		echo self::get_url($resource, $app);
+		if (!$app) {
+			if (strncmp($resource, '/', 1) === 0) { // request is absolute, parse app from request
+				$uri = split('\/', $resource);
+				$app = array_shift($uri);
+				$resource = join('/', $uri);
+			}
+			else {
+				$app = self::get_active_app();
+			}
+		}
+		
+		$url = WP_PLUGIN_URL . ($app ? "/$app/".$resource : "/wp-ci/".$resource);
+		if (self::is_secure()) {
+			$url = preg_replace('#^https?://#i', 'https://', $url);
+		}
+		return $url;
 	}
 	
 	static function activate($spec) {
@@ -414,7 +425,7 @@ class WPCI {
 		$icon_url = '';
 		if ($icon = isset($annotations['icon']) ? $annotations['icon'] : null) {
 			if (strncmp($icon, '/', 1) != 0 && strncmp($icon, 'http://', 7) != 0)
-				$icon_url = self::get_url($icon, $app); 
+				$icon_url = resource($icon, $app); 
 			else
 				$icon_url = $icon;
 		}
@@ -780,8 +791,6 @@ class WPCI {
 			}
 		}
 	}
-	
-	
 }
 
 
