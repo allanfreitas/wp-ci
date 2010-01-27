@@ -458,18 +458,18 @@ function get_link_to($path = array(), $params = array(), $return_array = FALSE) 
 
 		$menu = null;
 		$host = 'admin.php';
-		if ($menu = isset(WPCI::$admin_menus[$token])) {
+		if ($app = WPCI::find_app($token)) {
 			// FIXME: set host here...
 			
 		}
 		
 		// if $menu was found for $token, then page = $token; otherwise $page = 'wp-ci'
-		$page = ($menu) ? $token : "wp-ci";
+		$page = ($app) ? $token : "wp-ci";
 		
 		if ($return_array) {
 			$path['host'] = $host;
 			$path['page'] = $page;
-			$path['menu'] = $menu;
+			$path['app'] = $app;
 			// whatever receives $path will have to decide whether or not to add additional parameters...
 			return $path;
 		}
@@ -587,10 +587,10 @@ function form_open($path = array(), $attributes = '', $hidden = array(), $use_va
 				$form_action = $host.'?page='.$page;
 			}
 			
-			// when menu is null, $page does not include the parts of the CI path
+			// when app is null, $page does not include the parts of the CI path
 			// spec that tell CI what to execute... so we include them as hidden
 			// parameters
-			if (!$menu) {
+			if (!$app) {
 				$hidden = array_merge($hidden, array(
 					'a' => $application,
 					'c' => $controller,
