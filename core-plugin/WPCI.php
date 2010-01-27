@@ -101,7 +101,7 @@ class WPCI {
 		return (file_exists($path) ? $path : FALSE);
 	}
 
-	static function wpci_template($default) {
+	static function template($default) {
 		log_message('debug', "Default template is $default");
 		$template = $default;
 		if (is_codeigniter()) {
