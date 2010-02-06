@@ -15,4 +15,17 @@ class Demo extends Controller {
 		$this->load->view('links');
 	}
 	
+	/**
+	 * @ajax
+	 */
+	function ajax() {
+		echo json_encode(array(
+			'one' => 1,
+			'two' => 'two', 
+			'three' => array(1, 2, 3),
+			'obj' => new stdClass,
+			'bool' => true	
+		));
+	}
+	
 }
