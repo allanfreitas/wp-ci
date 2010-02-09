@@ -515,6 +515,9 @@ class WPCI {
 	}
 	
 	static function execute() {
+		// call upon pluggable applications to register themselves
+		do_action('wpci_register_apps');
+		
 		log_message('debug', 'Firing-up the engines: processing'.(is_admin() ? ' admin ' : ' ').'request.');
 		
 		if (is_admin()) {
