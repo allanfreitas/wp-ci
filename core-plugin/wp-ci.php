@@ -1,5 +1,5 @@
 <?php 
-`/**
+/**
  * WP-CI The CodeIgniter plugin for WordPress.
  * Copyright (C)2009-2010 Collegeman.net, LLC.
  * 
@@ -25,7 +25,7 @@ Description: Embed CodeIgniter(R) in WordPress, build plugins using MVC.
 Author: Aaron Collegeman
 Version: 1.0.0
 Author URI: http://aaroncollegeman.com
-*/`
+*/
 
 // absolute path to wp-ci src
 // these may be set in wp-config.php or wp-settings.php (for dev purposes)

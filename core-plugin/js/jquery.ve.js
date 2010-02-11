@@ -27,6 +27,7 @@
 		animateSubmit:true,
 		unbindEngine:true,
 		ajaxSubmit: false,
+		page: null,
 		promptPosition: "topRight",	// OPENNING BOX POSITION, IMPLEMENTED: topLeft, topRight, bottomLeft, centerRight, bottomRight
 		success : false,
 		failure : function() {}
@@ -37,8 +38,10 @@
 	
 	if(settings.inlineValidation == true){ 		// Validating Inline ?
 		if(firstvalid == true){					// NEEDED FOR THE SETTING returnIsValid
-			$(this).find("[class*=validate]").not("[type=checkbox]").bind(settings.validationEventTriggers, function(caller){ _inlinEvent(this); })
+			$(this).find("[class*=validate]").not("[type=checkbox]").not("[type=radio]").bind(settings.validationEventTriggers, function(caller){ _inlinEvent(this); })
+			$(this).find("select[class*=validate]").bind("change", function(caller){ _inlinEvent(this); })
 			$(this).find("[class*=validate][type=checkbox]").bind("click", function(caller){ _inlinEvent(this); })
+			$(this).find("[class*=validate][type=radio]").bind("click", function(caller){ _inlinEvent(this); })
 			firstvalid = false;
 		}
 			function _inlinEvent(caller){
@@ -157,7 +160,6 @@ $.validationEngine = {
 			}	
 			if (callerType == "radio" || callerType == "checkbox" ){
 				callerName = $(caller).attr("name");
-		
 				if($("input[name='"+callerName+"']:checked").size() == 0) {
 					$.validationEngine.isError = true;
 					if($("input[name='"+callerName+"']").size() ==1) {
@@ -420,7 +422,11 @@ $.validationEngine = {
 			left:callerleftPosition,
 			opacity:0
 		})
-		return $(divFormError).animate({"opacity":0.87},function(){return true;});	
+		return $(divFormError).animate({"opacity":0.80},function(){return true;}).mouseenter(function() {
+			$(this).animate({"opacity":0.25});
+		}).mouseleave(function() {
+			$(this).animate({"opacity":0.80});
+		});	
 	},
 	updatePromptText : function(caller,promptText,type,ajaxed) {	// UPDATE TEXT ERROR IF AN ERROR IS ALREADY DISPLAYED
 		
@@ -472,20 +478,22 @@ $.validationEngine = {
 		}
 		$(".debugError").append("<div class='debugerror'>"+error+"</div>");
 	},			
-	submitValidation : function(caller) {					// FORM SUBMIT VALIDATION LOOPING INLINE VALIDATION
+	submitValidation : function(caller, settings) {					// FORM SUBMIT VALIDATION LOOPING INLINE VALIDATION
 		var stopForm = false;
 		$.validationEngine.ajaxValid = true;
 		$(caller).find(".formError").remove();
 		var toValidateSize = $(caller).find("[class*=validate]").size();
 		
-		$(caller).find("[class*=validate]").each(function(){
+		var cssSelector = (settings.page !== null) ? 'fieldset.page:eq('+settings.page+') [class*=validate]' : '[class*=validate]';
+		$(caller).find(cssSelector).each(function(){
 			linkTofield = $.validationEngine.linkTofield(this);
-			
+		
 			if(!$("."+linkTofield).hasClass("ajaxed")){	// DO NOT UPDATE ALREADY AJAXED FIELDS (only happen if no normal errors, don't worry)
 				var validationPass = $.validationEngine.loadValidation(this);
 				return(validationPass) ? stopForm = true : "";					
 			};
 		});
+		
 		ajaxErrorLength = $.validationEngine.ajaxValidArray.length;		// LOOK IF SOME AJAX IS NOT VALIDATE
 		for(x=0;x<ajaxErrorLength;x++){
 	 		if($.validationEngine.ajaxValidArray[x][1] == false){
