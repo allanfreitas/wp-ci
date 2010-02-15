@@ -20,20 +20,19 @@
 
 /*
 Plugin Name: WP-CI
-Plugin URI: http://aaroncollegeman.com/projects/wp-ci
+Plugin URI: http://aaroncollegeman.com/projects/wordpress/wp-ci
 Description: Embed CodeIgniter(R) in WordPress, build plugins using MVC.
 Author: Aaron Collegeman
 Version: 1.0.0
 Author URI: http://aaroncollegeman.com
 */
 
+// marker constant
+define('HAS_WPCI', true);
+
 // absolute path to wp-ci src
-// these may be set in wp-config.php or wp-settings.php (for dev purposes)
-if (!defined('WPCI_FILE'))
-	define('WPCI_FILE', __FILE__);
-	
-if (!defined('WPCI_ROOT'))
-	define('WPCI_ROOT', dirname(__FILE__));
+if (!defined('WPCI_FILE')) define('WPCI_FILE', __FILE__);	
+if (!defined('WPCI_ROOT')) define('WPCI_ROOT', dirname(__FILE__));
 	
 // request methods
 define('GET', "GET");
