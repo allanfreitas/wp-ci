@@ -222,6 +222,8 @@ class MY_Router extends CI_Router {
 			}
 			else
 			{
+				/* DEFAULTS DON'T WORK because then there's always something executing, irrspective of whether
+				 	or not something SHOULD be executing according to the URL path 
 				$this->set_class($this->default_controller);
 				$this->set_method('index');
 			
@@ -231,6 +233,7 @@ class MY_Router extends CI_Router {
 					$this->directory = '';
 					return array();
 				}
+				*/
 			
 			}
 

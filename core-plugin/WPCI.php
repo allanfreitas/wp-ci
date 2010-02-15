@@ -510,10 +510,6 @@ class WPCI {
 	}
 	
 	
-	static function is_ajax() {
-		
-	}
-	
 	static function execute() {
 		// call upon pluggable applications to register themselves
 		do_action('wpci_register_apps');
