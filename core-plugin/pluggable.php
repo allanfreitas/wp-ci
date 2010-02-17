@@ -474,7 +474,6 @@ function get_link_to($path = array(), $params = array(), $return_array = FALSE) 
 		// the token is what is used to store menu references...
 		$token = "wp-ci/$application".$directory."$controller/$action";
 
-		$menu = null;
 		$host = 'admin.php';
 		if ($app = WPCI::find_app($token)) {
 			// FIXME: set host here...
@@ -507,7 +506,7 @@ function get_link_to($path = array(), $params = array(), $return_array = FALSE) 
 			
 			$url = "$host?page=$page";
 			
-			if (!$menu) {
+			if (!$app) {
 				$url .= "&a=$application&c=$controller&m=$action&d=$directory";
 			}
 			

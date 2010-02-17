@@ -98,6 +98,19 @@ class WPCI {
 		add_filter('page_template', 				array('WPCI', 'template'));
 		add_action('admin_menu', 					array('WPCI', 'admin_menu'));
 		add_action('plugins_loaded', 				array('WPCI', 'execute'));
+		
+		// disable WP core updates (care of http://lud.icro.us/disable-wordpress-core-update/)
+		# 2.3 to 2.7:
+		add_action( 'init', create_function( '$a', "remove_action( 'init', 'wp_version_check' );" ), 2 );
+		add_filter( 'pre_option_update_core', create_function( '$a', "return null;" ) );
+
+		# 2.8 to 3.0:
+		remove_action( 'wp_version_check', 'wp_version_check' );
+		remove_action( 'admin_init', '_maybe_update_core' );
+		add_filter( 'pre_transient_update_core', create_function( '$a', "return null;" ) );
+
+		# 3.0:
+		add_filter( 'pre_site_transient_update_core', create_function( '$a', "return null;" ) );
 	}
 	
 	private static function template_exists($file) {

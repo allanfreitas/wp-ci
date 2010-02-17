@@ -6,53 +6,53 @@
 		newLang: function() {
 			$.validationEngineLanguage.allRules = 	{"required":{    			// Add your regex rules here, you can take telephone as an example
 						"regex":"none",
-						"alertText":"* This field is required",
-						"alertTextCheckboxMultiple":"* Please select an option",
-						"alertTextCheckboxe":"* This checkbox is required"},
+						"alertText":"* Este campo es requerido",
+						"alertTextCheckboxMultiple":"* Por favor seleccione una opcion",
+						"alertTextCheckboxe":"* Este cuadro es requerido"},
 					"length":{
 						"regex":"none",
-						"alertText":"*Between ",
-						"alertText2":" and ",
-						"alertText3": " characters allowed"},
+						"alertText":"* Entre ",
+						"alertText2":" y ",
+						"alertText3": " caracteres permitidos"},
 					"maxCheckbox":{
 						"regex":"none",
-						"alertText":"* Checks allowed Exceeded"},	
+						"alertText":"* Opciones requeridas exedidas"},	
 					"minCheckbox":{
 						"regex":"none",
-						"alertText":"* Please select ",
-						"alertText2":" options"},	
+						"alertText":"* Por favor seleccione ",
+						"alertText2":" opciones"},	
 					"confirm":{
 						"regex":"none",
-						"alertText":"* Your field is not matching"},		
+						"alertText":"* Su campo no concuerda"},		
 					"telephone":{
 						"regex":"/^[0-9\-\(\)\ ]+$/",
-						"alertText":"* Invalid phone number"},	
+						"alertText":"* Numero telefonico invalido"},	
 					"email":{
 						"regex":"/^[a-zA-Z0-9_\.\-]+\@([a-zA-Z0-9\-]+\.)+[a-zA-Z0-9]{2,4}$/",
-						"alertText":"* Invalid email address"},	
+						"alertText":"* Correo electronico invalido"},	
 					"date":{
                          "regex":"/^[0-9]{4}\-\[0-9]{1,2}\-\[0-9]{1,2}$/",
-                         "alertText":"* Invalid date, must be in YYYY-MM-DD format"},
+                         "alertText":"* Fecha invalida, debe ser en formato año-mes-día"},
 					"onlyNumber":{
 						"regex":"/^[0-9\ ]+$/",
-						"alertText":"* Numbers only"},	
+						"alertText":"* Solo numeros"},	
 					"noSpecialCaracters":{
 						"regex":"/^[0-9a-zA-Z]+$/",
-						"alertText":"* No special caracters allowed"},	
+						"alertText":"* Caracteres especiales no permitidos"},	
 					"ajaxUser":{
 						"file":"validateUser.php",
 						"extraData":"name=eric",
-						"alertTextOk":"* This user is available",	
-						"alertTextLoad":"* Loading, please wait",
-						"alertText":"* This user is already taken"},	
+						"alertTextOk":"* Este usuario esta disponible",	
+						"alertTextLoad":"* Cargando por favor espere",
+						"alertText":"* Este usuario ya existe"},	
 					"ajaxName":{
 						"file":"validateUser.php",
-						"alertText":"* This name is already taken",
-						"alertTextOk":"* This name is available",	
-						"alertTextLoad":"* Loading, please wait"},		
+						"alertText":"* Este nombre ya existe",
+						"alertTextOk":"* Este nombre esta disponible",	
+						"alertTextLoad":"* Cargando, por favor espere"},		
 					"onlyLetter":{
 						"regex":"/^[a-zA-Z\ \']+$/",
-						"alertText":"* Letters only"}
+						"alertText":"* Solo letras"}
 					}	
 		}
 	}
