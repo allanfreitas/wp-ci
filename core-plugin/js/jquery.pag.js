@@ -45,12 +45,11 @@
 			// step box
 			var stepsClass = "formsteps"+pageCount;
 			form.before('<span class="'+stepsClass+'">Step X of Y</span>');
-			var steps = form.prev(stepsClass+':first');
+			var steps = $('.'+stepsClass+':first');
 
 			// page index
 			var index = -1;
 		
-			
 			// change page action
 			var changePage = function() {
 				var page = scroller.children('fieldset.page:eq('+index+')');
@@ -73,6 +72,8 @@
 				steps.addClass('step_'+(index+1));
 			
 				buttons.children('.btnBack').attr('disabled', (index > 0 ? '' : 'disabled'));
+				
+				$(".formError").remove();
 			};
 		
 			var valid = function() {
@@ -102,7 +103,6 @@
 				if (index <= 0)
 					return;
 				// hide all errors - may be too inclusive here
-				$(".formError").remove();
 				index--;
 				changePage();
 			};
