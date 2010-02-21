@@ -27,12 +27,22 @@ Version: 1.0.0
 Author URI: http://aaroncollegeman.com
 */
 
+if (defined('IS_WPCI')) {
+	add_action('admin_notices', create_function('', '
+		echo \'<div class="error"><p>WP-CMSPLUS is not active because WP-CI is also active. To enable WP-CMSPLUS, <a href="plugins.php">deactivate WP-CI</a>.</p></div>\'; 
+	'));
+	return true;
+}
+
 // marker constant
-define('HAS_WPCI', true);
+define('IS_WPCI', true);
 
 // absolute path to wp-ci src
 if (!defined('WPCI_FILE')) define('WPCI_FILE', __FILE__);	
 if (!defined('WPCI_ROOT')) define('WPCI_ROOT', dirname(__FILE__));
+
+// allow CMS project to integrate here
+if (file_exists('cms/cms.php')) require('cms/cms.php');
 	
 // request methods
 define('GET', "GET");
@@ -44,24 +54,22 @@ define('DELETE', "DELETE");
 require_once(WPCI_ROOT.'/WPCI.php');
 WPCI::add_actions();
 
-// load dependencies and support libraries
-if (!class_exists('clAPI')) 
-	require_once(WPCI_ROOT.'/lib/coreylib/coreylib.php');
+// coreylib for simplifying consumption of third-party Web services
+if (!class_exists('clAPI')) require(WPCI_ROOT.'/lib/coreylib/coreylib.php');
 
-if (!class_exists('Spyc')) 
-	require_once(WPCI_ROOT.'/lib/spyc/spyc.php');
+// Spyc for YAML parsing
+if (!class_exists('Spyc')) require(WPCI_ROOT.'/lib/spyc/spyc.php');
 
-if (!class_exists('Annotations')) 
-	require_once(WPCI_ROOT.'/lib/annotations.php');
+// Annotations to support reflection through Regular Expressions
+if (!class_exists('Annotations')) require(WPCI_ROOT.'/lib/annotations.php');
 
 // load the hacks file, if it exists, allowing for pluggable overrides.
-if (file_exists(WPCI_ROOT.'/hacks.php')) 
-	require_once(WPCI_ROOT.'/hacks.php');
+if (file_exists(WPCI_ROOT.'/hacks.php')) require(WPCI_ROOT.'/hacks.php');
 
 // pluggable (i.e., hackable from hacks.php) functions
-require_once(WPCI_ROOT.'/pluggable.php');
+require(WPCI_ROOT.'/pluggable.php');
 
 // bootstrap CodeIgniter
-require_once(WPCI_ROOT.'/bootstrap.php');
+require(WPCI_ROOT.'/bootstrap.php');
 
 log_message('debug', '+++| CodeIgniter is bootstrapped. Burn baby, burn. |+++');
