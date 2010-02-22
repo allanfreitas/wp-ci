@@ -26,6 +26,8 @@ class WPCI {
 	
 	private static $apps = array();
 	
+	public static $gateway_missing_error_activated = false;
+	
 	static function get_apps() {
 		return array_merge(array('__core__' => APPPATH), self::$apps);
 	}
@@ -87,21 +89,20 @@ class WPCI {
 	static function add_actions() {
 		add_action('activate_wp-ci/wp-ci.php', 			array('WPCI', 'activate_plugin'));
 		add_action('deactivate_wp-ci/wp-ci.php', 		array('WPCI', 'deactivate_plugin'));
-	
 		add_action('activate_wp-cmsplus/wp-ci.php', 	array('WPCI', 'activate_plugin'));
 		add_action('deactivate_wp-cmsplus/wp-ci.php', 	array('WPCI', 'deactivate_plugin'));
+		add_action('init', 								array('WPCI', 'flush_rules'));
+		add_action('in_admin_footer', 					array('WPCI', 'in_admin_footer'));
+		add_action('admin_menu', 						array('WPCI', 'admin_menu'));
+		add_action('plugins_loaded', 					array('WPCI', 'execute'));
 	
 		add_filter('wp_list_pages_excludes', 			array('WPCI', 'list_pages_excludes'));
-		add_filter('init', 								array('WPCI', 'flush_rules'));
 		add_filter('generate_rewrite_rules', 			array('WPCI', 'generate_rewrite_rules'));
 		add_filter('query_vars', 						array('WPCI', 'rewrite_query_vars'));
 		add_filter('the_title', 						array('WPCI', 'the_title'), 10, 2);
 		add_filter('wp_title', 							array('WPCI', 'wp_title'), 10, 3);
 		add_filter('the_content',						array('WPCI', 'the_content'));
-		add_action('in_admin_footer', 					array('WPCI', 'in_admin_footer'));
 		add_filter('page_template', 					array('WPCI', 'template'));
-		add_action('admin_menu', 						array('WPCI', 'admin_menu'));
-		add_action('plugins_loaded', 					array('WPCI', 'execute'));
 		
 		// disable WP core updates (care of http://lud.icro.us/disable-wordpress-core-update/)
 		# 2.3 to 2.7:
@@ -164,9 +165,23 @@ class WPCI {
 		return (is_codeigniter()) ? WPCI::get_title($sep, $seplocation) : $title;
 	}
 
+	static function activate_gateway_missing_error() {
+		if (!self::$gateway_missing_error_activated) {
+			self::$gateway_missing_error_activated = true;
+			add_action('admin_notices', create_function('', '
+				echo \'<div class="error"><p>The WP-CI gateway page is missing. <a href="options-general.php?page=wp-ci&c=settings&m=fixGateway">Fix this problem</a>.</p></div>\'; 
+			'));
+		}
+	}
+
 	static function the_content($content) {
 		global $wp_query, $RTR, $OUT;
-		$gateway = wpci_get_gateway();
+		
+		if (!($gateway = wpci_get_gateway())) {
+			self::activate_gateway_missing_error();
+			return $content;
+		}
+		
 		if ($wp_query->query_vars['pagename'] == $gateway->post_name) {
 			ob_start();
 			$OUT->_display();
@@ -187,6 +202,10 @@ class WPCI {
 	}
 
 	static function flush_rules() {
+		if (!($gateway = wpci_get_gateway())) {
+			self::activate_gateway_missing_error();
+		}
+		
 		global $wp_rewrite;
 		$wp_rewrite->flush_rules();
 	}
@@ -198,9 +217,7 @@ class WPCI {
 			) + $wp_rewrite->rules;
 		}
 		else {
-			add_action('admin_notices', create_function('', "
-				return '<div class=\"error\"><p>Gateway page is missing. To restore, please disable and then enable your WP-CI or WP-CMSPLUS plugin.</p></div>'; 
-			"));
+			self::activate_gateway_missing_error();
 		}	
 	}
 
@@ -241,6 +258,9 @@ class WPCI {
 		if ($gateway = wpci_get_gateway()) {
 			$exclude[] = $gateway->ID;
 			return $exclude;
+		}
+		else {
+			activate_gateway_missing_error();
 		}
 	}
 

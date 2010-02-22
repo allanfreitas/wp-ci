@@ -41,8 +41,8 @@ if (file_exists('cms/cms.php')) require('cms/cms.php');
 define('IS_WPCI', true);
 
 // absolute path to wp-ci src
-if (!defined('WPCI_FILE')) define('WPCI_FILE', __FILE__);	
-if (!defined('WPCI_ROOT')) define('WPCI_ROOT', dirname(__FILE__));
+if (!defined('WPCI_FILE')) define('WPCI_FILE', WP_PLUGIN_DIR.'/wp-ci/wp-ci.php');
+if (!defined('WPCI_ROOT')) define('WPCI_ROOT', WP_PLUGIN_DIR.'/wp-ci');
 
 // request methods
 define('GET', "GET");

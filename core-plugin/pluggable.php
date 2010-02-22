@@ -43,7 +43,13 @@ endif;
  */
 if (!function_exists('wpci_get_gateway')):
 function wpci_get_gateway() {
-	return get_page_by_path(get_option('wpci_gateway_slug'));
+	$page = get_page_by_path(get_option('wpci_gateway_slug'));
+	if ($page && $page->post_status == 'publish') {
+		return $page;
+	}
+	else {
+		return null;
+	}
 }
 endif;
 
