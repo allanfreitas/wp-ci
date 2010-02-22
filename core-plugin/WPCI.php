@@ -85,19 +85,23 @@ class WPCI {
 	}
 	
 	static function add_actions() {
-		add_action('activate_wp-ci/wp-ci.php', 		array('WPCI', 'activate_plugin'));
-		add_action('deactivate_wp-ci/wp-ci.php', 	array('WPCI', 'deactivate_plugin'));
-		add_filter('wp_list_pages_excludes', 		array('WPCI', 'list_pages_excludes'));
-		add_filter('init', 							array('WPCI', 'flush_rules'));
-		add_filter('generate_rewrite_rules', 		array('WPCI', 'generate_rewrite_rules'));
-		add_filter('query_vars', 					array('WPCI', 'rewrite_query_vars'));
-		add_filter('the_title', 					array('WPCI', 'the_title'), 10, 2);
-		add_filter('wp_title', 						array('WPCI', 'wp_title'), 10, 3);
-		add_filter('the_content',					array('WPCI', 'the_content'));
-		add_action('in_admin_footer', 				array('WPCI', 'in_admin_footer'));
-		add_filter('page_template', 				array('WPCI', 'template'));
-		add_action('admin_menu', 					array('WPCI', 'admin_menu'));
-		add_action('plugins_loaded', 				array('WPCI', 'execute'));
+		add_action('activate_wp-ci/wp-ci.php', 			array('WPCI', 'activate_plugin'));
+		add_action('deactivate_wp-ci/wp-ci.php', 		array('WPCI', 'deactivate_plugin'));
+	
+		add_action('activate_wp-cmsplus/wp-ci.php', 	array('WPCI', 'activate_plugin'));
+		add_action('deactivate_wp-cmsplus/wp-ci.php', 	array('WPCI', 'deactivate_plugin'));
+	
+		add_filter('wp_list_pages_excludes', 			array('WPCI', 'list_pages_excludes'));
+		add_filter('init', 								array('WPCI', 'flush_rules'));
+		add_filter('generate_rewrite_rules', 			array('WPCI', 'generate_rewrite_rules'));
+		add_filter('query_vars', 						array('WPCI', 'rewrite_query_vars'));
+		add_filter('the_title', 						array('WPCI', 'the_title'), 10, 2);
+		add_filter('wp_title', 							array('WPCI', 'wp_title'), 10, 3);
+		add_filter('the_content',						array('WPCI', 'the_content'));
+		add_action('in_admin_footer', 					array('WPCI', 'in_admin_footer'));
+		add_filter('page_template', 					array('WPCI', 'template'));
+		add_action('admin_menu', 						array('WPCI', 'admin_menu'));
+		add_action('plugins_loaded', 					array('WPCI', 'execute'));
 		
 		// disable WP core updates (care of http://lud.icro.us/disable-wordpress-core-update/)
 		# 2.3 to 2.7:

@@ -34,6 +34,9 @@ if (defined('IS_WPCI')) {
 	return true;
 }
 
+// allow CMS project to integrate here
+if (file_exists('cms/cms.php')) require('cms/cms.php');
+	
 // marker constant
 define('IS_WPCI', true);
 
@@ -41,9 +44,6 @@ define('IS_WPCI', true);
 if (!defined('WPCI_FILE')) define('WPCI_FILE', __FILE__);	
 if (!defined('WPCI_ROOT')) define('WPCI_ROOT', dirname(__FILE__));
 
-// allow CMS project to integrate here
-if (file_exists('cms/cms.php')) require('cms/cms.php');
-	
 // request methods
 define('GET', "GET");
 define('POST', "POST");
