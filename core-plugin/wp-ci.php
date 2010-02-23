@@ -34,11 +34,14 @@ if (defined('IS_WPCI')) {
 	return true;
 }
 
-// allow CMS project to integrate here
-if (file_exists('cms/cms.php')) require('cms/cms.php');
-	
 // marker constant
 define('IS_WPCI', true);
+
+// WP-CI plugin
+require('WPCI.php');
+
+// allow CMS project to integrate here, and possibly override anything in the pluggable part of the WP-CI core
+if (file_exists(dirname(__FILE__).'/cms/cms.php')) require('cms/cms.php');
 
 // absolute path to wp-ci src
 if (!defined('WPCI_FILE')) define('WPCI_FILE', WP_PLUGIN_DIR.'/wp-ci/wp-ci.php');
@@ -50,8 +53,7 @@ define('POST', "POST");
 define('PUT', "PUT");
 define('DELETE', "DELETE");
 
-// WP-CI plugin
-require_once(WPCI_ROOT.'/WPCI.php');
+// install all WPCI actions and filters
 WPCI::add_actions();
 
 // coreylib for simplifying consumption of third-party Web services

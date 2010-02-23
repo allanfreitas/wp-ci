@@ -43,27 +43,14 @@ class Settings extends Controller {
 				redirect('/wp-admin');
 				return true;
 			}
+			else {
+				// otherwise, create it!
+				wpci_create_gateway($slug);
+			}
 		}
 		else {
 			wp_die("Can't fix gateway issue. Please click Back, then deactivate and reactivate your WP-CI or WP-CMSPLUS plugin.");
 		}
-		
-		// alternative outcome - it's just missing...
-		$db->query("
-			INSERT INTO $posts (
-				post_type,
-				post_title,
-				post_content,
-				post_status,
-				post_name
-			) VALUES (
-				'page',
-				'CodeIgniter Gateway',
-				'The purpose of this file is to provide a page through which all CodeIgniter-generated content can be displayed. Please do not delete it.',
-				'publish',
-				'$slug'
-			)
-		");
 		
 		redirect('/wp-admin');
 		return true;
