@@ -71,21 +71,11 @@ endif;
  */
 if (!function_exists('wpci_create_gateway')):
 function wpci_create_gateway($slug) {
-	/* this doesn't work from within a CI controller:
-	return wp_insert_post(array(
-		'post_type' => 'page',
-		'post_title' => 'CodeIgniter Gateway',
-		'post_content' => "The purpose of this file is to provide a page through which all CodeIgniter-generated content can be displayed. Please do not delete it.",
-		'post_status' => 'publish',
-		'post_name' => $slug
-	));
-	*/
-	
 	global $wpdb;
-	$posts = $wpdb->prefix.'posts';
-	$db = DB();
 	
-	$db->query("
+	$posts = $wpdb->prefix.'posts';
+	
+	$wpdb->query("
 		INSERT INTO $posts (
 			post_type,
 			post_title,
@@ -101,17 +91,18 @@ function wpci_create_gateway($slug) {
 		)
 	");
 	
-	$post_id = $db->insert_id();
 	$postmeta = $wpdb->prefix.'postmeta';
 	  
 	// disable All-in-One SEO plugin on this page
-	$db->query("
+	$wpdb->query("
 		INSERT INTO $postmeta (
 			post_id, meta_key, meta_value
 		) VALUES (
-			$post_id, '_aioseop_disable', 'on'
+			$wpdb->insert_id, '_aioseop_disable', 'on'
 		)
 	");
+	
+	return $wpdb->insert_id;
 }
 endif;
 
