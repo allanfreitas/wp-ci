@@ -398,17 +398,15 @@ class WPCI {
 						}
 						else if (count($item = $ann->for_method($method, 'item'))) {
 							$all_annotations['submenu'] = $all_annotations['item'];
-							self::add_submenu($app, "$app_path/$entry", $class, $method_name, $all_annotations);
+							self::add_submenu($app, "$app_path/$entry", $class, $method, $all_annotations);
 						}
 
-						/*
 						// submenus on specific pages
-						foreach(array('posts', 'media', 'links', 'pages', 'comments', 'appearance', 'plugins', 'users', 'tools', 'settings') as $p) {
-							if (isset($method[$p.'_item'])) {
-								self::add_submenu($app, "$app_path/$entry", $class, $method_name, $method, $p);
+						foreach(array('dashboard', 'posts', 'media', 'links', 'pages', 'comments', 'appearance', 'plugins', 'users', 'tools', 'settings') as $p) {
+							if (isset($all_annotations[$p.'_menu'])) {
+								self::add_submenu($app, "$app_path/$entry", $class, $method, $all_annotations, $p);
 							}
 						}
-						*/
 					}
 				}
 			}
@@ -486,7 +484,9 @@ class WPCI {
 	}
 	
 	static function add_submenu($app, $path, $class, $method_name, $ann, $page = null) {
-		$args = wp_parse_args($ann['submenu'][0], array(
+		$ann_name = ($page ? $page.'_menu' : 'submenu');
+		
+		$args = wp_parse_args($ann[$ann_name][0], array(
 			'page_title' => 'My Menu Item',
 			'menu_title' => '',
 			'capability' => '',
@@ -511,6 +511,36 @@ class WPCI {
 		
 		self::$app_index[$app][$class][$method_name] = $token;
 		self::$app_index[$token] = array('app' => $app, 'app_path' => $path, 'class' => $class, 'method_name' => $method_name);
+		
+		if ($page) {
+			if ($page == 'media') {
+				$args['parent'] = 'upload.php';
+			}
+			else if ($page == 'dashboard') {
+				$args['parent'] = 'index.php';
+			}
+			else if ($page == 'posts') {
+				$args['parent'] = 'edit.php';
+			}
+			else if ($page == 'links') {
+				$args['parent'] = 'link-manager.php';
+			}
+			else if ($page == 'pages') {
+				$args['parent'] = 'edit-pages.php';
+			}
+			else if ($page == 'comments') {
+				$args['parent'] = 'edit-comments.php';
+			}
+			else if ($page == 'appearance') {
+				$args['parent'] = 'themes.php';
+			}
+			else if ($page == 'settings') {
+				$args['parent'] = 'options-general.php';
+			}
+			else {
+				$args['parent'] = $page.'.php';
+			}
+		}
 		
 		if ($args['parent']) {
 			if (stripos($args['parent'], '.php') == strlen($args['parent'])-4) // specific WordPress menu...
