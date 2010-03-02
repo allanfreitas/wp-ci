@@ -265,18 +265,7 @@ endif;
  */
 if (!function_exists("redirect")):
 function redirect($path = null, $params = array()) {
-	if (!is_array($path) && preg_match('#^(\w+:/)?/#i', $path)) {
-		wp_redirect($path);
-		exit;
-	}
-	else if (!is_array($path) && ($path == '/' || $path === '' || $path === null)) {
-		wp_redirect(get_bloginfo('home'));
-		exit;
-	}
-	else {
-		wp_redirect(get_link_to($path, $params));
-		exit;
-	}
+	return WPCI::redirect($path, $params);
 }
 
 /**
@@ -284,7 +273,7 @@ function redirect($path = null, $params = array()) {
  * @deprecated Use redirect($path, $params, $as_request_param) instead. This function WILL go away.
  */
 function wpci_redirect($path = null, $params = array()) {
-	redirect($path, $params);
+	return WPCI::redirect($path, $params);
 }
 endif;
 

@@ -59,6 +59,27 @@ a.icon-compose span {
 	background-image: url('../img/compose.png');
 }
 
+a.icon-image span {
+	background-image: url('../img/image.png');
+}
+
+a.icon-folder-image span {
+	background-image: url('../img/folder_image.png');
+}
+
+a.icon-next span {
+	background-image: url('../img/resultset_next.png');
+}
+
+a.icon-previous span {
+	background-image: url('../img/resultset_previous.png');
+}
+
+a.disabled span {
+	opacity: 0.4;
+	filter: alpha(opacity=40);
+}
+
 a.no-label span {
 	text-indent: -9999px;
 	padding-left: 16px;

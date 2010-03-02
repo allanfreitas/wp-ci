@@ -82,6 +82,21 @@ class WPCI {
 		return htmlentities(self::get($name, $default));
 	}
 	
+	static function redirect($path = null, $parms = array()) {
+		if (!is_array($path) && preg_match('#^(\w+:/)?/#i', $path)) {
+			wp_redirect($path);
+			exit;
+		}
+		else if (!is_array($path) && ($path == '/' || $path === '' || $path === null)) {
+			wp_redirect(get_bloginfo('home'));
+			exit;
+		}
+		else {
+			wp_redirect(get_link_to($path, $params));
+			exit;
+		}
+	}
+	
 	static function is_secure() {
 		return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on';
 	}
