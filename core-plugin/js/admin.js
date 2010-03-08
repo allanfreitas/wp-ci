@@ -1,6 +1,6 @@
 // make sure we always have a console, even if it does nothing...
 if (!window.console) {
-	window.console = {
+	window.console = { 
 		log: function() {},
 		debug: function() {},
 		info: function() {},
@@ -26,15 +26,15 @@ if (!window.console) {
 if (!window.send_to_editor) {
 	window.send_to_editor = function(snippet) {
 		var editor = window.send_to_editor.next_editor;
-
-		var start = snippet.indexOf('<img src="');
-		var end = snippet.indexOf('"', start+10);
-		var href = snippet.substring(start+10, end);
+		if (editor) {
+			var start = snippet.indexOf('<img src="');
+			var end = snippet.indexOf('"', start+10);
+			var href = snippet.substring(start+10, end);
 	
-		console.log(href);
+			console.log(href);
 		
-		jQuery('#'+editor).val(href);
-		
+			jQuery('#'+editor).val(href);
+		}
 		tb_remove();
 	}
 }
