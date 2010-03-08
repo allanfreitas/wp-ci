@@ -250,7 +250,8 @@ class WPCI {
 
 			update_option('wpci_gateway_slug', $slug);
 		}
-
+		
+		
 		// no page for the slug? maybe deleted, create again...
 		else if (!get_page_by_path($slug)) {
 			wpci_create_gateway($slug);
@@ -714,6 +715,7 @@ class WPCI {
 			$CI->method = strtoupper($_SERVER['REQUEST_METHOD']);
 
 			$is_ajax = $ann->for_class('ajax') || $ann->for_method($method, 'ajax');
+			$no_chrome = $ann->for_class('no_chrome') || $ann->for_method($method, 'no_chrome');
 			$ajax_content = null;
 
 			// Is this a scaffolding request?
@@ -766,9 +768,9 @@ class WPCI {
 
 					// Call the requested method.
 					// Any URI segments present (besides the class/function) will be passed to the method for convenience
-					if ($is_ajax) ob_start();
+					if ($is_ajax || $no_chrome) ob_start();
 					call_user_func_array(array(&$CI, $method), array_slice($URI->rsegments, 2));
-					
+					if ($is_ajax || $no_chrome) $ajax_content = ob_get_clean();
 				}
 			}
 
@@ -800,8 +802,9 @@ class WPCI {
 			}
 			
 			// if this was an ajax request, then we display the output and terminate
-			if ($is_ajax) {
-				header('Content-Type: application/json', true);
+			if ($is_ajax || $no_chrome) {
+				if ($is_ajax)
+					header('Content-Type: application/json', true);
 				echo $ajax_content;
 				$OUT->_display();
 				exit(0);
@@ -941,7 +944,10 @@ class WPCI {
 				$EXT->_call_hook('post_controller_constructor');
 
 				// ajax annotation = no header
-				if ($is_ajax = $ann->for_class('ajax') || $ann->for_method($method, 'ajax')) {
+				$is_ajax = $ann->for_class('ajax') || $ann->for_method($method, 'ajax');
+				$no_chrome = $ann->for_class('no_chrome') || $ann->for_method($method, 'chrome');
+				
+				if ($is_ajax || $no_chrome) {
 					$_GET['noheader'] = 1;
 				}
 				
@@ -962,9 +968,9 @@ class WPCI {
 
 					// Call the requested method.
 					// Any URI segments present (besides the class/function) will be passed to the method for convenience
-					if ($is_ajax) ob_start();
+					if ($is_ajax || $no_chrome) ob_start();
 					call_user_func_array(array(&$CI, $method), array());
-					if ($is_ajax) $ajax_content = ob_get_clean();
+					if ($is_ajax || $no_chrome) $ajax_content = ob_get_clean();
 				}
 
 				$BM->mark('controller_execution_time_( '.$class.' / '.$method.' )_end');
@@ -978,8 +984,9 @@ class WPCI {
 				}	
 				
 				// if this was an ajax request, then we display the output and terminate
-				if ($is_ajax) {
-					header('Content-type: application/json', true);
+				if ($is_ajax || $no_chrome) {
+					if ($is_ajax)
+						header('Content-type: application/json', true);
 					echo $ajax_content;
 					$OUT->_display();
 					exit(0);
